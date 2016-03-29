@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,21 +14,28 @@ using WeatherServiceHW04.Models;
 
 namespace WeatherServiceHW04.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TemperaturesController : ApiController
     {
-        private WeatherServiceContext db = new WeatherServiceContext();
+        private readonly WeatherServiceContext _db = new WeatherServiceContext();
 
         // GET: api/Temperatures
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<Temperature> GetTemperatures()
         {
-            return db.Temperatures;
+            return _db.Temperatures;
         }
 
         // GET: api/Temperatures/5
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> GetTemperature(string id)
         {
-            Temperature temperature = await db.Temperatures.FindAsync(id);
+            Temperature temperature = await _db.Temperatures.FindAsync(id);
             if (temperature == null)
             {
                 return NotFound();
@@ -37,6 +45,12 @@ namespace WeatherServiceHW04.Controllers
         }
 
         // PUT: api/Temperatures/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="temperature"></param>
+        /// <returns></returns>
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutTemperature(string id, Temperature temperature)
         {
@@ -50,11 +64,11 @@ namespace WeatherServiceHW04.Controllers
                 return BadRequest();
             }
 
-            db.Entry(temperature).State = EntityState.Modified;
+            _db.Entry(temperature).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -82,10 +96,21 @@ namespace WeatherServiceHW04.Controllers
 
             string id = Guid.NewGuid().ToString();
             temperature.Id = id;
-            db.Temperatures.Add(temperature);
+            temperature.Year = temperature.RecorDateTime.Year;
+            temperature.Month = temperature.RecorDateTime.Month;
+            temperature.Day = temperature.RecorDateTime.DayOfYear;
+
+            var currentCulture = CultureInfo.CurrentCulture;
+            temperature.Week = currentCulture.Calendar.GetWeekOfYear(
+                            temperature.RecorDateTime,
+                            currentCulture.DateTimeFormat.CalendarWeekRule,
+                            currentCulture.DateTimeFormat.FirstDayOfWeek);
+
+            _db.Temperatures.Add(temperature);
+
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -106,14 +131,14 @@ namespace WeatherServiceHW04.Controllers
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> DeleteTemperature(string id)
         {
-            Temperature temperature = await db.Temperatures.FindAsync(id);
+            Temperature temperature = await _db.Temperatures.FindAsync(id);
             if (temperature == null)
             {
                 return NotFound();
             }
 
-            db.Temperatures.Remove(temperature);
-            await db.SaveChangesAsync();
+            _db.Temperatures.Remove(temperature);
+            await _db.SaveChangesAsync();
 
             return Ok(temperature);
         }
@@ -122,14 +147,14 @@ namespace WeatherServiceHW04.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool TemperatureExists(string id)
         {
-            return db.Temperatures.Count(e => e.Id == id) > 0;
+            return _db.Temperatures.Count(e => e.Id == id) > 0;
         }
     }
 }

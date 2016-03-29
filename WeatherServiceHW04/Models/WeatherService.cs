@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 
 namespace WeatherServiceHW04.Models
@@ -11,10 +13,10 @@ namespace WeatherServiceHW04.Models
     [CustomValidation(typeof(Temperature), "ValidateDegree")]
     public class Temperature
     {
+
         /// <summary>
-        /// Gets or sets the customer identifier.
+        /// 
         /// </summary>
-        /// <value>The identifier.</value>
         public string Id { get; set; }
         /// <summary>
         /// Gets or sets the customer's name.
@@ -26,7 +28,14 @@ namespace WeatherServiceHW04.Models
         /// </summary>
         /// <value>The email address.</value>
         public DateTime RecorDateTime { get; set; }
-
+        [JsonIgnore]
+        public int Year { get; set; }
+        [JsonIgnore]
+        public int Month { get; set; }
+        [JsonIgnore]
+        public int Week { get; set; }
+        [JsonIgnore]
+        public int Day { get; set; }
         /// <summary>
         /// Validates the name and email.
         /// </summary>
@@ -57,7 +66,14 @@ namespace WeatherServiceHW04.Models
         /// </summary>
         /// <value>The email address.</value>
         public DateTime RecorDateTime { get; set; }
-
+        [JsonIgnore]
+        public int Year { get; set; }
+        [JsonIgnore]
+        public int Month { get; set; }
+        [JsonIgnore]
+        public int Week { get; set; }
+        [JsonIgnore]
+        public int Day { get; set; }
         /// <summary>
         /// Validates the name and email.
         /// </summary>
@@ -91,7 +107,14 @@ namespace WeatherServiceHW04.Models
         /// </summary>
         /// <value>The email address.</value>
         public DateTime RecorDateTime { get; set; }
-
+        [JsonIgnore]
+        public int Year { get; set; }
+        [JsonIgnore]
+        public int Month { get; set; }
+        [JsonIgnore]
+        public int Week { get; set; }
+        [JsonIgnore]
+        public int Day { get; set; }
         /// <summary>
         /// Validates the name and email.
         /// </summary>
