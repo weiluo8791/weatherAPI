@@ -13,20 +13,10 @@ namespace WeatherServiceHW04.Models
     [CustomValidation(typeof(Temperature), "ValidateDegree")]
     public class Temperature
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string Id { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's name.
-        /// </summary>
-        /// <value>The name.</value>
+        [Required]
         public decimal? Degree { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's email address.
-        /// </summary>
-        /// <value>The email address.</value>
+        [Required]
         public DateTime RecorDateTime { get; set; }
         [JsonIgnore]
         public int Year { get; set; }
@@ -36,35 +26,24 @@ namespace WeatherServiceHW04.Models
         public int Week { get; set; }
         [JsonIgnore]
         public int Day { get; set; }
-        /// <summary>
-        /// Validates the name and email.
-        /// </summary>
-        /// <param name="temperature"></param>
-        /// <param name="ctx">The context.</param>
-        /// <returns>ValidationResult.</returns>
+
         public static ValidationResult ValidateDegree(Temperature temperature, ValidationContext ctx)
         {
             return ValidationResult.Success;
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [CustomValidation(typeof(Pressure), "ValidateMillibar")]
     public class Pressure
     {
-        /// <summary>
-        /// Gets or sets the customer identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
+
         public string Id { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's name.
-        /// </summary>
-        /// <value>The name.</value>
+        [Required]
         public decimal? Millibar { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's email address.
-        /// </summary>
-        /// <value>The email address.</value>
+        [Required]
         public DateTime RecorDateTime { get; set; }
         [JsonIgnore]
         public int Year { get; set; }
@@ -74,12 +53,7 @@ namespace WeatherServiceHW04.Models
         public int Week { get; set; }
         [JsonIgnore]
         public int Day { get; set; }
-        /// <summary>
-        /// Validates the name and email.
-        /// </summary>
-        /// <param name="pressure"></param>
-        /// <param name="ctx">The context.</param>
-        /// <returns>ValidationResult.</returns>
+
         public static ValidationResult ValidateMillibar(Pressure pressure, ValidationContext ctx)
         {
             return ValidationResult.Success;
@@ -92,20 +66,11 @@ namespace WeatherServiceHW04.Models
     [CustomValidation(typeof(Humidity), "ValidatePercentage")]
     public class Humidity
     {
-        /// <summary>
-        /// Gets or sets the customer identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
+
         public string Id { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's name.
-        /// </summary>
-        /// <value>The name.</value>
+        [Required]
         public decimal? Percentage { get; set; }
-        /// <summary>
-        /// Gets or sets the customer's email address.
-        /// </summary>
-        /// <value>The email address.</value>
+        [Required]
         public DateTime RecorDateTime { get; set; }
         [JsonIgnore]
         public int Year { get; set; }
@@ -115,12 +80,7 @@ namespace WeatherServiceHW04.Models
         public int Week { get; set; }
         [JsonIgnore]
         public int Day { get; set; }
-        /// <summary>
-        /// Validates the name and email.
-        /// </summary>
-        /// <param name="humidity"></param>
-        /// <param name="ctx">The context.</param>
-        /// <returns>ValidationResult.</returns>
+
         public static ValidationResult ValidatePercentage(Humidity humidity, ValidationContext ctx)
         {
             return ValidationResult.Success;

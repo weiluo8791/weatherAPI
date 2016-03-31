@@ -17,14 +17,14 @@ namespace WeatherServiceHW04.Models
 
         //private const string ConnectionStringName = "Name=MS_TableConnectionString";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public WeatherServiceContext() : base("name=WeatherServiceHW04Context")
         //public WeatherServiceContext() : base(ConnectionStringName)
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public DbSet<Temperature> Temperatures { get; set; }
         public DbSet<Pressure> Pressures { get; set; }
         public DbSet<Humidity> Humidities { get; set; }

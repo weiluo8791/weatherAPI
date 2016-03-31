@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -26,14 +23,19 @@ namespace WeatherServiceHW04.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        public IQueryable<Temperature> GetTemperatures()
+        public IQueryable<Temperature> GetAllTemperatures()
         {
             return _db.Temperatures;
         }
 
-        // GET: api/Temperatures/5
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Temperature))]
-        public async Task<IHttpActionResult> GetTemperature(string id)
+        public async Task<IHttpActionResult> GetOneTemperature(string id)
         {
             Temperature temperature = await _db.Temperatures.FindAsync(id);
             if (temperature == null)
@@ -44,6 +46,159 @@ namespace WeatherServiceHW04.Controllers
             return Ok(temperature);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(Temperature))]
+        [Route("api/temperature/{type}/{period}/low")]
+        public async Task<IHttpActionResult> GetLowTemperature(string type, int period)
+        {
+            IQueryable<Temperature> temperature;
+
+            switch (type)
+            {
+                case "year":
+                    temperature = from a in _db.Temperatures
+                                  where a.Year == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "month":
+                    temperature = from a in _db.Temperatures
+                                  where a.Month == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "week":
+                    temperature = from a in _db.Temperatures
+                                  where a.Week == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "day":
+                    temperature = from a in _db.Temperatures
+                                  where a.Day == period
+                                  where a.Degree !=-99
+                                  select a;
+                    break;
+                default:
+                    return NotFound();
+            }
+            var lowestDegree = await temperature.Select(a => a.Degree).MinAsync();
+
+            if (lowestDegree == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(lowestDegree);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(Temperature))]
+        [Route("api/temperature/{type}/{period}/high")]
+        public async Task<IHttpActionResult> GetHighTemperature(string type, int period)
+        {
+            IQueryable<Temperature> temperature;
+
+            switch (type)
+            {
+                case "year":
+                    temperature = from a in _db.Temperatures
+                                  where a.Year == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "month":
+                    temperature = from a in _db.Temperatures
+                                  where a.Month == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "week":
+                    temperature = from a in _db.Temperatures
+                                  where a.Week == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "day":
+                    temperature = from a in _db.Temperatures
+                                  where a.Day == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                default:
+                    return NotFound();
+            }
+            var highestDegree = await temperature.Select(a => a.Degree).MaxAsync();
+
+            if (highestDegree == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(highestDegree);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(Temperature))]
+        [Route("api/temperature/{type}/{period}/avg")]
+        public async Task<IHttpActionResult> GetAverageTemperature(string type, int period)
+        {
+            IQueryable<Temperature> temperature;
+
+            switch (type)
+            {
+                case "year":
+                    temperature = from a in _db.Temperatures
+                                  where a.Year == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "month":
+                    temperature = from a in _db.Temperatures
+                                  where a.Month == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "week":
+                    temperature = from a in _db.Temperatures
+                                  where a.Week == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                case "day":
+                    temperature = from a in _db.Temperatures
+                                  where a.Day == period
+                                  where a.Degree != -99
+                                  select a;
+                    break;
+                default:
+                    return NotFound();
+            }
+            var averageDegree = await temperature.Select(a => a.Degree).AverageAsync();
+
+            if (averageDegree == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(averageDegree);
+        }
         // PUT: api/Temperatures/5
         /// <summary>
         /// 
@@ -85,7 +240,12 @@ namespace WeatherServiceHW04.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Temperatures
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="temperature"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> PostTemperature(Temperature temperature)
         {
@@ -127,7 +287,12 @@ namespace WeatherServiceHW04.Controllers
             return CreatedAtRoute("DefaultApi", new { id = temperature.Id }, temperature);
         }
 
-        // DELETE: api/Temperatures/5
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> DeleteTemperature(string id)
         {
