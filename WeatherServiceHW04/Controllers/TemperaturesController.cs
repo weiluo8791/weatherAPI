@@ -20,9 +20,9 @@ namespace WeatherServiceHW04.Controllers
 
         // GET: api/Temperatures
         /// <summary>
-        /// 
+        /// Get all temperature
         /// </summary>
-        /// <returns></returns>
+        /// <returns>IQueryable</returns>
         public IQueryable<Temperature> GetAllTemperatures()
         {
             return _db.Temperatures;
@@ -30,10 +30,10 @@ namespace WeatherServiceHW04.Controllers
 
 
         /// <summary>
-        /// 
+        /// Get temperature by id
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> GetOneTemperature(string id)
         {
@@ -48,11 +48,11 @@ namespace WeatherServiceHW04.Controllers
 
 
         /// <summary>
-        /// 
+        /// Get low temperature by time 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="period"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/low")]
         public async Task<IHttpActionResult> GetLowTemperature(string type, int period)
@@ -99,11 +99,11 @@ namespace WeatherServiceHW04.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Get high temperature by time 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="period"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/high")]
         public async Task<IHttpActionResult> GetHighTemperature(string type, int period)
@@ -150,11 +150,11 @@ namespace WeatherServiceHW04.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Get average temperature by time 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="period"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/avg")]
         public async Task<IHttpActionResult> GetAverageTemperature(string type, int period)
@@ -197,15 +197,15 @@ namespace WeatherServiceHW04.Controllers
                 return NotFound();
             }
 
-            return Ok(new { type, period, averageDegree = averageDegree });
+            return Ok(new { type, period, averageDegree });
         }
         // PUT: api/Temperatures/5
         /// <summary>
-        /// 
+        /// Update temperature by id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="temperature"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutTemperature(string id, Temperature temperature)
         {
@@ -242,10 +242,10 @@ namespace WeatherServiceHW04.Controllers
 
 
         /// <summary>
-        /// 
+        /// Create temperature 
         /// </summary>
         /// <param name="temperature"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> PostTemperature(Temperature temperature)
         {
@@ -253,13 +253,13 @@ namespace WeatherServiceHW04.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            //new id
             string id = Guid.NewGuid().ToString();
             temperature.Id = id;
+            //populate year, month, week and day from RecorDateTime
             temperature.Year = temperature.RecorDateTime.Year;
             temperature.Month = temperature.RecorDateTime.Month;
             temperature.Day = temperature.RecorDateTime.DayOfYear;
-
             var currentCulture = CultureInfo.CurrentCulture;
             temperature.Week = currentCulture.Calendar.GetWeekOfYear(
                             temperature.RecorDateTime,
@@ -289,10 +289,10 @@ namespace WeatherServiceHW04.Controllers
 
 
         /// <summary>
-        /// 
+        /// Delete temperature by Id
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Temperature))]
         public async Task<IHttpActionResult> DeleteTemperature(string id)
         {
