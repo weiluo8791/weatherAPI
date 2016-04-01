@@ -95,7 +95,7 @@ namespace WeatherServiceHW04.Controllers
                 return NotFound();
             }
 
-            return Ok(lowestDegree);
+            return Ok(new {type,period, lowTemperature = lowestDegree });
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace WeatherServiceHW04.Controllers
                 return NotFound();
             }
 
-            return Ok(highestDegree);
+            return Ok(new { type, period, highTemperature = highestDegree });
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace WeatherServiceHW04.Controllers
                 return NotFound();
             }
 
-            return Ok(averageDegree);
+            return Ok(new { type, period, averageDegree = averageDegree });
         }
         // PUT: api/Temperatures/5
         /// <summary>

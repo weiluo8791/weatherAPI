@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -17,13 +13,20 @@ namespace WeatherServiceHW04.Controllers
     {
         private WeatherServiceContext db = new WeatherServiceContext();
 
-        // GET: api/Pressures
+        /// <summary>
+        /// Get all pressure
+        /// </summary>
+        /// <returns>IQueryable</returns>
         public IQueryable<Pressure> GetPressures()
         {
             return db.Pressures;
         }
 
-        // GET: api/Pressures/5
+        /// <summary>
+        /// Get one pressure by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Pressure))]
         public async Task<IHttpActionResult> GetPressure(string id)
         {
@@ -36,7 +39,12 @@ namespace WeatherServiceHW04.Controllers
             return Ok(pressure);
         }
 
-        // PUT: api/Pressures/5
+        /// <summary>
+        /// Update pressure by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pressure"></param>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutPressure(string id, Pressure pressure)
         {
@@ -71,7 +79,11 @@ namespace WeatherServiceHW04.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Pressures
+        /// <summary>
+        /// Create pressure 
+        /// </summary>
+        /// <param name="pressure"></param>
+        /// <returns>IHttpActionResult interface</returns>
         [ResponseType(typeof(Pressure))]
         public async Task<IHttpActionResult> PostPressure(Pressure pressure)
         {
@@ -101,7 +113,11 @@ namespace WeatherServiceHW04.Controllers
             return CreatedAtRoute("DefaultApi", new { id = pressure.Id }, pressure);
         }
 
-        // DELETE: api/Pressures/5
+        /// <summary>
+        /// Delete pressure by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Pressure))]
         public async Task<IHttpActionResult> DeletePressure(string id)
         {
