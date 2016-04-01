@@ -18,24 +18,13 @@ namespace WeatherServiceHW04.Migrations
 
         protected override void Seed(WeatherServiceHW04.Models.WeatherServiceContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
-             
+            //load from file c:\MABOSTON.txt which contains tempature data for Boston from 1995-2016
+            //initial loaded the temperature table
             var allDays = File.ReadAllLines("c:\\MABOSTON.txt").Select(a => a.Split(','));
             var currentCulture = CultureInfo.CurrentCulture;
             foreach (var eachday in allDays)
             {
-                DateTime thisDate = new DateTime(Int32.Parse(eachday[2]), Int32.Parse(eachday[0]), Int32.Parse(eachday[1]));
+                DateTime thisDate = new DateTime(int.Parse(eachday[2]), int.Parse(eachday[0]), int.Parse(eachday[1]));
                 context.Temperatures.AddOrUpdate(x => x.Id,
                 new Temperature()
                 {
