@@ -1,5 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace WeatherServiceHW04.Controllers
     /// </summary>
     public class HumiditiesController : ApiController
     {
-        private WeatherServiceContext db = new WeatherServiceContext();
+        private WeatherServiceContext _db = new WeatherServiceContext();
 
         // GET: api/Humidities
         /// <summary>
@@ -23,7 +25,7 @@ namespace WeatherServiceHW04.Controllers
         /// <returns>IQueryable</returns>
         public IQueryable<Humidity> GetHumidities()
         {
-            return db.Humidities;
+            return _db.Humidities;
         }
 
 
@@ -36,7 +38,7 @@ namespace WeatherServiceHW04.Controllers
         [ResponseType(typeof(Humidity))]
         public async Task<IHttpActionResult> GetHumidity(string id)
         {
-            Humidity humidity = await db.Humidities.FindAsync(id);
+            Humidity humidity = await _db.Humidities.FindAsync(id);
             if (humidity == null)
             {
                 return NotFound();
@@ -64,11 +66,11 @@ namespace WeatherServiceHW04.Controllers
                 return BadRequest();
             }
 
-            db.Entry(humidity).State = EntityState.Modified;
+            _db.Entry(humidity).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -98,11 +100,26 @@ namespace WeatherServiceHW04.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Humidities.Add(humidity);
+            //new id
+            string id = Guid.NewGuid().ToString();
+            humidity.Id = id;
+
+            //populate year, month, week and day from RecorDateTime
+            humidity.Year = humidity.RecorDateTime.Year;
+            humidity.Month = humidity.RecorDateTime.Month;
+            humidity.Day = humidity.RecorDateTime.DayOfYear;
+            var currentCulture = CultureInfo.CurrentCulture;
+            humidity.Week = currentCulture.Calendar.GetWeekOfYear(
+                            humidity.RecorDateTime,
+                            currentCulture.DateTimeFormat.CalendarWeekRule,
+                            currentCulture.DateTimeFormat.FirstDayOfWeek);
+
+            //add the change to the humidity object
+            _db.Humidities.Add(humidity);
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -127,14 +144,14 @@ namespace WeatherServiceHW04.Controllers
         [ResponseType(typeof(Humidity))]
         public async Task<IHttpActionResult> DeleteHumidity(string id)
         {
-            Humidity humidity = await db.Humidities.FindAsync(id);
+            Humidity humidity = await _db.Humidities.FindAsync(id);
             if (humidity == null)
             {
                 return NotFound();
             }
 
-            db.Humidities.Remove(humidity);
-            await db.SaveChangesAsync();
+            _db.Humidities.Remove(humidity);
+            await _db.SaveChangesAsync();
 
             return Ok(humidity);
         }
@@ -143,14 +160,14 @@ namespace WeatherServiceHW04.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool HumidityExists(string id)
         {
-            return db.Humidities.Count(e => e.Id == id) > 0;
+            return _db.Humidities.Count(e => e.Id == id) > 0;
         }
     }
 }

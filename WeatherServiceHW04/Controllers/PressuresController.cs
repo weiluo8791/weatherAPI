@@ -1,5 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace WeatherServiceHW04.Controllers
 {
     public class PressuresController : ApiController
     {
-        private WeatherServiceContext db = new WeatherServiceContext();
+        private readonly WeatherServiceContext _db = new WeatherServiceContext();
 
         /// <summary>
         /// Get all pressure
@@ -19,7 +21,7 @@ namespace WeatherServiceHW04.Controllers
         /// <returns>IQueryable</returns>
         public IQueryable<Pressure> GetPressures()
         {
-            return db.Pressures;
+            return _db.Pressures;
         }
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace WeatherServiceHW04.Controllers
         [ResponseType(typeof(Pressure))]
         public async Task<IHttpActionResult> GetPressure(string id)
         {
-            Pressure pressure = await db.Pressures.FindAsync(id);
+            Pressure pressure = await _db.Pressures.FindAsync(id);
             if (pressure == null)
             {
                 return NotFound();
@@ -58,11 +60,11 @@ namespace WeatherServiceHW04.Controllers
                 return BadRequest();
             }
 
-            db.Entry(pressure).State = EntityState.Modified;
+            _db.Entry(pressure).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -92,11 +94,25 @@ namespace WeatherServiceHW04.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Pressures.Add(pressure);
+            //new id
+            string id = Guid.NewGuid().ToString();
+            pressure.Id = id;
+            //populate year, month, week and day from RecorDateTime
+            pressure.Year = pressure.RecorDateTime.Year;
+            pressure.Month = pressure.RecorDateTime.Month;
+            pressure.Day = pressure.RecorDateTime.DayOfYear;
+            var currentCulture = CultureInfo.CurrentCulture;
+            pressure.Week = currentCulture.Calendar.GetWeekOfYear(
+                            pressure.RecorDateTime,
+                            currentCulture.DateTimeFormat.CalendarWeekRule,
+                            currentCulture.DateTimeFormat.FirstDayOfWeek);
+
+            //add the change to the pressure object
+            _db.Pressures.Add(pressure);
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -121,14 +137,14 @@ namespace WeatherServiceHW04.Controllers
         [ResponseType(typeof(Pressure))]
         public async Task<IHttpActionResult> DeletePressure(string id)
         {
-            Pressure pressure = await db.Pressures.FindAsync(id);
+            Pressure pressure = await _db.Pressures.FindAsync(id);
             if (pressure == null)
             {
                 return NotFound();
             }
 
-            db.Pressures.Remove(pressure);
-            await db.SaveChangesAsync();
+            _db.Pressures.Remove(pressure);
+            await _db.SaveChangesAsync();
 
             return Ok(pressure);
         }
@@ -137,14 +153,14 @@ namespace WeatherServiceHW04.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool PressureExists(string id)
         {
-            return db.Pressures.Count(e => e.Id == id) > 0;
+            return _db.Pressures.Count(e => e.Id == id) > 0;
         }
     }
 }
