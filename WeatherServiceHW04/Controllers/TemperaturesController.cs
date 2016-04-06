@@ -53,7 +53,7 @@ namespace WeatherServiceHW04.Controllers
         /// <param name="type"></param>
         /// <param name="period"></param>
         /// <returns>IHttpActionResult interface</returns>
-        [ResponseType(typeof(Temperature))]
+        //[ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/low")]
         public async Task<IHttpActionResult> GetLowTemperature(string type, int period)
         {
@@ -104,7 +104,7 @@ namespace WeatherServiceHW04.Controllers
         /// <param name="type"></param>
         /// <param name="period"></param>
         /// <returns>IHttpActionResult interface</returns>
-        [ResponseType(typeof(Temperature))]
+        //[ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/high")]
         public async Task<IHttpActionResult> GetHighTemperature(string type, int period)
         {
@@ -155,7 +155,7 @@ namespace WeatherServiceHW04.Controllers
         /// <param name="type"></param>
         /// <param name="period"></param>
         /// <returns>IHttpActionResult interface</returns>
-        [ResponseType(typeof(Temperature))]
+        //[ResponseType(typeof(Temperature))]
         [Route("api/temperature/{type}/{period}/avg")]
         public async Task<IHttpActionResult> GetAverageTemperature(string type, int period)
         {
